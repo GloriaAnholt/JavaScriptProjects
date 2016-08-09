@@ -1,0 +1,90 @@
+
+/* General All-selectors formatting */
+
+html {
+    font-family: 'Open Sans', Verdana, sans-serif;
+    font-size: 100%;
+    color: #333;
+}
+
+a {
+    text-decoration: none;
+    font-family: 'Open Sans', Verdana, sans-serif;
+    font-size: 90%;
+    color: #333;
+}
+
+p {
+    padding: 2em 2em 1em 2em;
+    width: 70%;
+    float: center;
+}
+
+h1 {
+    font-family: 'Montez', sans-serif;
+    font-size: 40px;
+    font-weight: 400;
+    color: #76323F;
+    text-align: center;
+}
+
+
+/*  Navigation Bar Specific Formatting  */
+
+ul.navbar {
+    margin: -8px;
+    padding: 0px;
+    overflow: hidden;
+    width: 105%;
+    background-color: #C09F80;
+    list-style-type: none;
+    font-family: 'Open Sans', sans-serif;
+}
+
+ul.navbar li {
+    float: left;
+    font: Verdana;
+}
+
+ul.navbar li a {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 16px 25px;
+}
+
+ul.navbar li a:hover {
+    background-color: #111;
+}
+
+ul.navbar li a:hover:not(.active) {
+    background-color: #000;
+}
+
+ul.navbar li a.active {
+    background-color:#4CAF50;
+}
+
+
+/*  Photo Wrapper Specific Formatting  */
+
+#photo_wrapper > li {
+	float: left;
+	margin: 10px 20px 20px 10px;
+	border: 2px solid #CCC;
+	border-radius: 8px;
+	box-shadow: rgba(0,0,0,0.1) 10px 10px;
+	list-style-type: none;
+}
+
+#photo_wrapper p {
+    text-align: center;
+}
+
+#footer {
+	height: 50px;
+	background-color: #69D2E7;
+	/*Add your CSS here!*/
+	clear: both;
+
+}
