@@ -7,6 +7,11 @@ html {
     color: #333;
 }
 
+body {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
 a {
     text-decoration: none;
     font-family: 'Open Sans', Verdana, sans-serif;
@@ -20,22 +25,46 @@ p {
     float: center;
 }
 
-h1 {
-    font-family: 'Montez', sans-serif;
-    font-size: 40px;
-    font-weight: 400;
-    color: #76323F;
-    text-align: center;
+
+
+
+/* "Hero" header formatting */
+
+.hero {
+    background-image: url('../img/background_1440.jpg');
+    background-repeat: no-repeat;
+    background-position: center center;
+    height: 80vh;
+    background-origin: content-box;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
 }
+
+.hero h1 {
+    font-family: 'Montez', sans-serif;
+    font-size: 3rem;
+    font-weight: 400;
+    line-height: 1.5em;
+    color: #fff;
+    text-align: center;
+    }
+
+/*
+@media only screen and (max-width: 320px) {
+    #image {
+        background-image: url(img/background_320.jpg);
+        }
+} */
 
 
 /*  Navigation Bar Specific Formatting  */
 
 ul.navbar {
-    margin: -8px;
+    margin: 0px;
     padding: 0px;
     overflow: hidden;
-    width: 105%;
+    width: 100%;
     background-color: #C09F80;
     list-style-type: none;
     font-family: 'Open Sans', sans-serif;
@@ -84,7 +113,6 @@ ul.navbar li a.active {
 #footer {
 	height: 50px;
 	background-color: #69D2E7;
-	/*Add your CSS here!*/
 	clear: both;
 
 }
