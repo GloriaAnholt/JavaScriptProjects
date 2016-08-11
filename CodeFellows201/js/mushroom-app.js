@@ -43,11 +43,21 @@ function mushroomClick(mtype) {
     document.getElementById(mtype).onclick = function(){
         for(var i=0; i<mushroom_types.length; i++) {
             document.getElementById(mushroom_types[i]).style.opacity = 0;
+            }
+
+    if (mtype === 'caps') {
+
+        setTimeout(function() {
+            for(var i=0; i<mushroom_types.length; i++) {
+            document.getElementById(mushroom_types[i]).className = 'hidden'; }; }, 1000);
+
+        setTimeout(function() {     // anonymous function, only used here
+            for(var i=0; i<cap_types.length; i++) {
+            document.getElementById(cap_types[i]).className = 'fadein'; }; }, 1000);
         }
-    selected.style.opacity = 1;
-    selected.className = 'active';
-    }
+
+    } // close onclick = function()
     return false;
- }
+ } // close mushroomClick
 
 window.onload = makeInteractive();
