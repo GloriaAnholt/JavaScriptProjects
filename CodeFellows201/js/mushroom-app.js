@@ -15,7 +15,9 @@
 // Create the event handler for mouse-over and clicking links
 
 var mushroom_types = ["caps", "morels", "trumpets", "puffballs", "corals", "shelves"];
+var mInstructions = "Select the outline of your mushroom to get started.";
 var cap_types = ["gills", "pores", "teeth"];
+var capInstructions = "Does the underside of the cap have gills, pores (like foam), or teeth?";
 
 
 function makeInteractive() {
@@ -60,7 +62,9 @@ function mushroomClick(mtype) {
         };
 
         function fadeThings() {
-            setTimeout('capsFadeIn();', 1000);
+            document.getElementById('caps').className = 'hidden';
+            setTimeout('capsFadein();', 1000);
+            document.getElementById('instructions').innerHTML = capInstructions;
         };
 
         orderEvents();
@@ -77,9 +81,8 @@ function mushroomHide() {
 };
 
 function capsFadein() {
-    alert("I reached the capsfadein function");
     for(var i=0; i<cap_types.length; i++) {
-        document.getElementById(cap_types[i]).className = "fadein";
+        document.getElementById(cap_types[i]).className = "unselected";
     };
 };
 
