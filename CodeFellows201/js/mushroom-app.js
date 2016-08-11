@@ -19,19 +19,14 @@ var cap_types = ["gills", "pores", "teeth"];
 
 
 function makeInteractive() {
-    var mushrooms = document.getElementById('mushroom_types');
     var all = mushroom_types.length;
     for(var i=0; i<all; i++) {
         // Attach a listener to each li
-        document.getElementById(mushroom_types[i]).addEventListener("click", mushroomClick(mushroom_types[i]));
         document.getElementById(mushroom_types[i]).addEventListener("onmouseover", mushroomOver(mushroom_types[i]));
         document.getElementById(mushroom_types[i]).addEventListener("onmouseout", mushroomOut(mushroom_types[i]));
+        document.getElementById(mushroom_types[i]).addEventListener("click", mushroomClick(mushroom_types[i]));
     };
     }
-
-function mushroomClick(mtype) {
-    document.getElementById(mtype).onclick = function(){alert("testing")};
-}
 
 function mushroomOver(mtype) {
     document.getElementById(mtype).onmouseover = function(){this.className = 'active'};
@@ -41,5 +36,18 @@ function mushroomOut(mtype) {
     document.getElementById(mtype).onmouseout = function(){this.className = 'unselected'};
 }
 
+function mushroomClick(mtype) {
+
+    var selected = document.getElementById(mtype)
+
+    document.getElementById(mtype).onclick = function(){
+        for(var i=0; i<mushroom_types.length; i++) {
+            document.getElementById(mushroom_types[i]).style.opacity = 0;
+        }
+    selected.style.opacity = 1;
+    selected.className = 'active';
+    }
+    return false;
+ }
 
 window.onload = makeInteractive();

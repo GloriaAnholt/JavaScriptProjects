@@ -98,6 +98,7 @@ ul.navbar li a.active {
 
 /*  Photo Wrapper Specific Formatting  */
 
+
 #mushroom_types > li.unselected {
 	float: left;
 	padding: 5px;
@@ -106,6 +107,18 @@ ul.navbar li a.active {
 	box-shadow: rgba(0,0,0,0.04) 15px 15px;
 	margin: 10px 10px 20px 30px;
 	list-style-type: none;
+    -webkit-transition: opacity 800ms ease;
+}
+
+#mushroom_types img {
+    float: right;
+    margin-bottom: 20px;
+}
+
+#mushroom_types p {
+    margin: 0 -10px 0 -30px;
+    width: 100%;
+    text-align: center;
 }
 
 .active {
@@ -118,15 +131,8 @@ ul.navbar li a.active {
 	list-style-type: none;
 }
 
-#mushroom_types img {
-    float: right;
-    margin-bottom: 20px;
-}
-
-#mushroom_types p {
-    margin: 0 -10px 0 -30px;
-    width: 100%;
-    text-align: center;
+.hidden {
+	display = none;
 }
 
 
