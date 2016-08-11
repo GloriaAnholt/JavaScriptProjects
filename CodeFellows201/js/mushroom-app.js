@@ -47,17 +47,40 @@ function mushroomClick(mtype) {
 
     if (mtype === 'caps') {
 
-        setTimeout(function() {
-            for(var i=0; i<mushroom_types.length; i++) {
-            document.getElementById(mushroom_types[i]).className = 'hidden'; }; }, 1000);
+        function orderEvents() {
+            hideThings(fadeThings);
+        };
 
-        setTimeout(function() {     // anonymous function, only used here
-            for(var i=0; i<cap_types.length; i++) {
-            document.getElementById(cap_types[i]).className = 'fadein'; }; }, 1000);
-        }
+        function hideThings(callback) {
+            setTimeout(function() {
+                mushroomHide();
+                if (typeof callback == 'function')
+                    callback();
+                }, 1000);
+        };
 
+        function fadeThings() {
+            setTimeout('capsFadeIn();', 1000);
+        };
+
+        orderEvents();
+    } // close if statement
     } // close onclick = function()
     return false;
+
  } // close mushroomClick
+
+function mushroomHide() {
+    for(var i=0; i<mushroom_types.length; i++) {
+        document.getElementById(mushroom_types[i]).className = 'hidden';
+    };
+};
+
+function capsFadein() {
+    alert("I reached the capsfadein function");
+    for(var i=0; i<cap_types.length; i++) {
+        document.getElementById(cap_types[i]).className = "fadein";
+    };
+};
 
 window.onload = makeInteractive();
