@@ -15,14 +15,17 @@ var mushroom_types = ["caps", "morels", "trumpets", "puffballs", "corals", "shel
 var caps = ["gills", "pores", "teeth"];
 
 // Specific mushrooms per type
-var gills = ["shaggy_mane"];
-var pores = ["bolete"];
-var teeth = ["hedgehog_mushroom"];
-var morels = ["blackmorel"];
-var trumpets = ["blue_chanterelle", "chanterelle"];
-var puffballs = ["common_puffball"];
-var corals = ["cauliflower_mushroom"];
-var shelves = ["chicken_of_the_woods", "oyster_mushroom"];
+var m_hash = {
+    caps: ["gills", "pores", "teeth"],
+    gills: ["shaggymane"],
+    pores: ["bolete"],
+    teeth: ["hedgehog"],
+    morels: ["blackmorel"],
+    trumpets: ["bluechanterelle", "chanterelle"],
+    puffballs: ["commonpuffball"],
+    corals: ["cauliflower"],
+    shelves: ["chickenofthewoods", "oyster"]
+}
 
 // Instruction text
 var mInstructions = "Select the outline of your mushroom to get started.";
@@ -102,46 +105,47 @@ function setupMushrooms() {
     switch(selection) {
         case "caps":
             removeOld((currentMushrooms.length - caps.length));
-            insertNew(caps);
+            insertNew("caps");
             break;
         case "morels":
             removeOld((currentMushrooms.length - morels.length));
-            insertNew(morels);
+            insertNew("morels");
             break;
         case "trumpets":
             removeOld((currentMushrooms.length - trumpets.length));
-            insertNew(trumpets);
+            insertNew("trumpets");
             break;
         case "puffballs":
             removeOld((currentMushrooms.length - puffballs.length));
-            insertNew(puffballs);
+            insertNew("puffballs");
             break;
         case "corals":
             removeOld((currentMushrooms.length - corals.length));
-            insertNew(corals);
+            insertNew("corals");
             break;
         case "shelves":
             removeOld((currentMushrooms.length - shelves.length));
-            insertNew(shelves);
+            insertNew("shelves");
             break;
         case "gills":
             removeOld((currentMushrooms.length - gills.length));
-            insertNew(gills);
+            insertNew("gills");
             break;
         case "pores":
             removeOld((currentMushrooms.length - pores.length));
-            insertNew(pores);
+            insertNew("pores");
             break;
         case "teeth":
             removeOld((currentMushrooms.length - teeth.length));
-            insertNew(teeth);
+            insertNew("teeth");
             break;
         default:
             break;
     }; // close switch statement
 
-    function insertNew(newMushrooms) {
+    function insertNew(mtype) {
 
+        newMushrooms = m_hash[mtype];
         for(var i=0; i < newMushrooms.length; i++) {
             pic = "img/" + newMushrooms[i] + ".jpg";
             if (newMushrooms.length === 1) {
@@ -149,6 +153,7 @@ function setupMushrooms() {
                 break;
             } else {
                 document.getElementById(currentMushrooms[i]).children[1].src = pic;
+                document.getElementById(currentMushrooms[i]).className = 'unselected';
             }
         };
     currentMushrooms = selection;
