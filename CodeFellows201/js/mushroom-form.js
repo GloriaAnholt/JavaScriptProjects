@@ -12,13 +12,13 @@
 
 // Broader categories
 var mushroom_types = ["caps", "morels", "trumpets", "puffballs", "corals", "shelves"];
-var cap_types = ["gills", "pores", "teeth"];
+var caps = ["gills", "pores", "teeth"];
 
 // Specific mushrooms per type
 var gills = ["shaggy_mane"];
 var pores = ["bolete"];
 var teeth = ["hedgehog_mushroom"];
-var morels = ["black_morel"];
+var morels = ["blackmorel"];
 var trumpets = ["blue_chanterelle", "chanterelle"];
 var puffballs = ["common_puffball"];
 var corals = ["cauliflower_mushroom"];
@@ -42,8 +42,7 @@ localStorage.setItem('currentMushrooms',JSON.stringify(currentMushrooms));
 
 // Functions for mouse events
 function makeInteractive() {
-    var all = mushroom_types.length;
-    for(var i=0; i<all; i++) {
+    for(var i=0; i<mushroom_types.length; i++) {
         // Attach a listener to each label in the form
         document.getElementById(mushroom_types[i]).addEventListener("onmouseover", mushroomOver(mushroom_types[i]));
         document.getElementById(mushroom_types[i]).addEventListener("onmouseout", mushroomOut(mushroom_types[i]));
@@ -55,7 +54,7 @@ function makeInteractive() {
 function mushroomOver(mtype) {
     if (document.getElementById(mtype).className === 'unselected') {
         document.getElementById(mtype).onmouseover = function(){this.className = 'active'};
-        }
+    }
 }
 
 function mushroomOut(mtype) {
@@ -66,7 +65,6 @@ function mushroomOut(mtype) {
 
 function mushroomClick(mtype) {
         document.getElementById(mtype).onclick = function(){this.className = 'selected'};
-
 }
 
 // Functions for what to do when the form is submitted
@@ -80,11 +78,15 @@ function fadeOut (callback) {
         if (document.getElementById(mushroom_types[i]).className != 'selected') {
            document.getElementById(mushroom_types[i]).style.opacity = 0;
        } else {
-            selection = mushroom_types[i]; }
-       };
-    if (typeof callback === "function") {
-        callback();
-    }
+            selection = mushroom_types[i];
+       }
+    };
+
+    setTimeout( function() {
+        if (typeof callback === "function") {
+            callback();
+        };
+    }, 1000);
 }
 
 
@@ -100,52 +102,66 @@ function setupMushrooms() {
     switch(selection) {
         case "caps":
             removeOld((currentMushrooms.length - caps.length));
+            insertNew(caps);
             break;
         case "morels":
             removeOld((currentMushrooms.length - morels.length));
-            insertNew(currentMushrooms, morels);
+            insertNew(morels);
             break;
         case "trumpets":
             removeOld((currentMushrooms.length - trumpets.length));
+            insertNew(trumpets);
             break;
         case "puffballs":
             removeOld((currentMushrooms.length - puffballs.length));
+            insertNew(puffballs);
             break;
         case "corals":
             removeOld((currentMushrooms.length - corals.length));
+            insertNew(corals);
             break;
         case "shelves":
             removeOld((currentMushrooms.length - shelves.length));
+            insertNew(shelves);
             break;
         case "gills":
             removeOld((currentMushrooms.length - gills.length));
+            insertNew(gills);
             break;
         case "pores":
             removeOld((currentMushrooms.length - pores.length));
+            insertNew(pores);
             break;
         case "teeth":
             removeOld((currentMushrooms.length - teeth.length));
+            insertNew(teeth);
             break;
         default:
             break;
     }; // close switch statement
 
-    function insertNew(oldMushrooms, newMushrooms) {
-        for(var i=0; i < newMushrooms.length; i++) {
-            pic = "../img/" + newMushrooms[i] + ".jpg";
-            document.getElementById(oldMushrooms[i]).src = pic }
-        };
+    function insertNew(newMushrooms) {
 
-    function removeOld(numToRemove) {
-        alert("i arrived in remove");
-        var total=0;
-        while(total < numToRemove) {
-            for(var i=mushroom_types.length - 1; i>=0; i--) {
-                if (document.getElementById(mushroom_types[i]).className != 'selected') {
-                    document.getElementById(mushroom_types[i]).className = 'hidden'; };
-                };
-            total++; }
+        for(var i=0; i < newMushrooms.length; i++) {
+            pic = "img/" + newMushrooms[i] + ".jpg";
+            if (newMushrooms.length === 1) {
+                document.getElementById(selection).children[1].src = pic;
+                break;
+            } else {
+                document.getElementById(currentMushrooms[i]).children[1].src = pic;
+            }
         };
+    currentMushrooms = selection;
+    localStorage.setItem('currentMushrooms',JSON.stringify(currentMushrooms));
+    };
+
+    function removeOld(numToRemove) {  // TODO this seems have an off by one error
+        for(var i=0, total=0; (i<mushroom_types.length) && (total < numToRemove); i++) {
+            if (document.getElementById(mushroom_types[i]).className != 'selected') {
+                document.getElementById(mushroom_types[i]).className = 'hidden';
+                total++; };
+        };
+    };
 
 
 }
