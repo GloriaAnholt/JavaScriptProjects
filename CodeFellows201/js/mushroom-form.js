@@ -45,7 +45,7 @@ localStorage.setItem('currentMushrooms',JSON.stringify(currentMushrooms));
 
 // Functions for mouse events
 function makeInteractive() {
-    for(var i=0; i<mushroom_types.length; i++) {
+    for(var i=0; i < mushroom_types.length; i++) {
         // Attach a listener to each label in the form
         document.getElementById(mushroom_types[i]).addEventListener("onmouseover", mushroomOver(mushroom_types[i]));
         document.getElementById(mushroom_types[i]).addEventListener("onmouseout", mushroomOut(mushroom_types[i]));
@@ -77,11 +77,11 @@ function mformSubmit() {
 }
 
 function fadeOut (callback) {
-    for(var i=0; i<mushroom_types.length; i++) {
-        if (document.getElementById(mushroom_types[i]).className != 'selected') {
-           document.getElementById(mushroom_types[i]).style.opacity = 0;
+    for(var i=0; i < currentMushrooms.length; i++) {
+        if (document.getElementById(currentMushrooms[i]).className != 'selected') {
+           document.getElementById(currentMushrooms[i]).style.opacity = 0;
        } else {
-            selection = mushroom_types[i];
+            selection = currentMushrooms[i];
        }
     };
 
@@ -92,7 +92,7 @@ function fadeOut (callback) {
     }, 1000);
 }
 
-
+// When the window is ready, set up event listeners and form, then respond to clicks
 window.onload = function() {
     if (localStorage.getItem('currentMushrooms') != '' && localStorage.getItem('currentMushrooms') != null) {
         currentMushrooms = JSON.parse(localStorage.getItem('currentMushrooms'));
@@ -102,34 +102,39 @@ window.onload = function() {
 
 function setupMushrooms() {
 
-    numSelection = (m_hash[selection]).length
-    removeOld((currentMushrooms.length - numSelection));
-    insertNew(selection);
-    
-    function insertNew(mtype) {
+    var lenSelection = (m_hash[selection]).length
+    removeOld((currentMushrooms.length - lenSelection));
+    insertNew();
 
-        newMushrooms = m_hash[mtype];
-        for(var i=0; i < newMushrooms.length; i++) {
-            pic = "img/" + newMushrooms[i] + ".jpg";
-            if (newMushrooms.length === 1) {
-                document.getElementById(selection).children[1].src = pic;
-                break;
-            } else {
+    function removeOld(numToRemove) {
+        for(var i=0, total=0; (i < currentMushrooms.length) && (total < numToRemove); i++) {
+            if (currentMushrooms[i] != selection) {
+                document.getElementById(currentMushrooms[i]).className = 'hidden';
+                total++; };
+        };
+    };
+
+    function insertNew() {
+        newMushrooms = m_hash[selection];
+        if (newMushrooms.length === 1) {
+            pic = "img/" + newMushrooms[0] + ".jpg";
+            document.getElementById(selection).children[1].src = pic;
+            document.getElementById("instructions").innerHTML = "Does your mushroom look like these " + selection + "?";
+        } else {
+            document.getElementById(selection).className = 'hidden';
+            for(var i=0; i < newMushrooms.length; i++) {
+                pic = "img/" + newMushrooms[i] + ".jpg";
+             // TODO should change the ID to match the new mushroom, or it won't be findable
                 document.getElementById(currentMushrooms[i]).children[1].src = pic;
+             // TODO clearly this line doesn't work, but unsure why not:
                 document.getElementById(currentMushrooms[i]).className = 'unselected';
-            }
+            };
         };
     currentMushrooms = selection;
     localStorage.setItem('currentMushrooms',JSON.stringify(currentMushrooms));
     };
 
-    function removeOld(numToRemove) {  // TODO this seems have an off by one error
-        for(var i=0, total=0; (i<mushroom_types.length) && (total < numToRemove); i++) {
-            if (document.getElementById(mushroom_types[i]).className != 'selected') {
-                document.getElementById(mushroom_types[i]).className = 'hidden';
-                total++; };
-        };
-    };
+
 
 
 }

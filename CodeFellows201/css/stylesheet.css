@@ -28,6 +28,22 @@ p {
   display: none;
 }
 
+.unselected {
+    display: inline-block;
+    background-color: #fff;
+	float: left;
+	padding: 5px;
+	border: 2px solid #CCC;
+	border-radius: 8px;
+	box-shadow: rgba(0,0,0,0.04) 15px 15px;
+	margin: 10px 10px 20px 30px;
+    /* Opacity tricks */
+    -webkit-transition: opacity 800ms ease;
+    -moz-transition: opacity 800ms ease;
+    -o-transition: opacity 800ms ease;
+    transition: opacity 800ms ease;
+}
+
 
 /* "Hero" header formatting */
 
@@ -36,7 +52,6 @@ p {
     background-repeat: no-repeat;
     background-position: center center;
     height: 80vh;
-    border
     background-origin: content-box;
     -webkit-background-size: cover;
     -moz-background-size: cover;
