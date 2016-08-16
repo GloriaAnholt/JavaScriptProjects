@@ -102,47 +102,10 @@ window.onload = function() {
 
 function setupMushrooms() {
 
-    switch(selection) {
-        case "caps":
-            removeOld((currentMushrooms.length - caps.length));
-            insertNew("caps");
-            break;
-        case "morels":
-            removeOld((currentMushrooms.length - morels.length));
-            insertNew("morels");
-            break;
-        case "trumpets":
-            removeOld((currentMushrooms.length - trumpets.length));
-            insertNew("trumpets");
-            break;
-        case "puffballs":
-            removeOld((currentMushrooms.length - puffballs.length));
-            insertNew("puffballs");
-            break;
-        case "corals":
-            removeOld((currentMushrooms.length - corals.length));
-            insertNew("corals");
-            break;
-        case "shelves":
-            removeOld((currentMushrooms.length - shelves.length));
-            insertNew("shelves");
-            break;
-        case "gills":
-            removeOld((currentMushrooms.length - gills.length));
-            insertNew("gills");
-            break;
-        case "pores":
-            removeOld((currentMushrooms.length - pores.length));
-            insertNew("pores");
-            break;
-        case "teeth":
-            removeOld((currentMushrooms.length - teeth.length));
-            insertNew("teeth");
-            break;
-        default:
-            break;
-    }; // close switch statement
-
+    numSelection = (m_hash[selection]).length
+    removeOld((currentMushrooms.length - numSelection));
+    insertNew(selection);
+    
     function insertNew(mtype) {
 
         newMushrooms = m_hash[mtype];
