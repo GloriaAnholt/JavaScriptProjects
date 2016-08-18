@@ -51,7 +51,10 @@ function makeInteractive() {
         document.getElementById(mushroom_types[i]).addEventListener("onmouseout", mushroomOut(mushroom_types[i]));
         document.getElementById(mushroom_types[i]).addEventListener("onclick", mushroomClick(mushroom_types[i]));
     };
-    form.addEventListener('click', mformSubmit);
+    form.addEventListener('click', function(event) { event.preventDefault();
+                                                     mformSubmit(); }
+                         )
+
 }
 
 function mushroomOver(mtype) {
@@ -72,24 +75,9 @@ function mushroomClick(mtype) {
 
 // Functions for what to do when the form is submitted
 function mformSubmit() {
-    // Once the fade is completed, call the setup function
-    fadeOut(setupMushrooms);
-}
+    fadeOut();
+    setTimeout(setupMushrooms, 1000);
 
-function fadeOut (callback) {
-    for(var i=0; i < currentMushrooms.length; i++) {
-        if (document.getElementById(currentMushrooms[i]).className != 'selected') {
-           document.getElementById(currentMushrooms[i]).style.opacity = 0;
-       } else {
-            selection = currentMushrooms[i];
-       }
-    };
-
-    setTimeout( function() {
-        if (typeof callback === "function") {
-            callback();
-        };
-    }, 1000);
 }
 
 // When the window is ready, set up event listeners and form, then respond to clicks
@@ -100,41 +88,63 @@ window.onload = function() {
     makeInteractive();
 }
 
-function setupMushrooms() {
+// All the interactions functionality
+function fadeOut() {
+    for(var i=0; i < currentMushrooms.length; i++) {
+        if (document.getElementById(currentMushrooms[i]).className != 'selected') {
+           document.getElementById(currentMushrooms[i]).style.opacity = 0;
+        } else {
+            selection = currentMushrooms[i];
+        };
+    };
+}
 
-    var lenSelection = (m_hash[selection]).length
+function setupMushrooms() {
+    var lenSelection = (m_hash[selection]).length;
     removeOld((currentMushrooms.length - lenSelection));
     insertNew();
-
-    function removeOld(numToRemove) {
-        for(var i=0, total=0; (i < currentMushrooms.length) && (total < numToRemove); i++) {
-            if (currentMushrooms[i] != selection) {
-                document.getElementById(currentMushrooms[i]).className = 'hidden';
-                total++; };
-        };
-    };
-
-    function insertNew() {
-        newMushrooms = m_hash[selection];
-        if (newMushrooms.length === 1) {
-            pic = "img/" + newMushrooms[0] + ".jpg";
-            document.getElementById(selection).children[1].src = pic;
-            document.getElementById("instructions").innerHTML = "Does your mushroom look like these " + selection + "?";
-        } else {
-            document.getElementById(selection).className = 'hidden';
-            for(var i=0; i < newMushrooms.length; i++) {
-                pic = "img/" + newMushrooms[i] + ".jpg";
-             // TODO should change the ID to match the new mushroom, or it won't be findable
-                document.getElementById(currentMushrooms[i]).children[1].src = pic;
-             // TODO clearly this line doesn't work, but unsure why not:
-                document.getElementById(currentMushrooms[i]).className = 'unselected';
-            };
-        };
     currentMushrooms = selection;
     localStorage.setItem('currentMushrooms',JSON.stringify(currentMushrooms));
+}
+
+function removeOld(numToRemove) {
+    for(var i=0; i < currentMushrooms.length; i++) {
+        if (currentMushrooms[i] != selection) {
+            document.getElementById(currentMushrooms[i]).className = 'remove';
+        }
     };
+}
 
+function insertNew() {
+    // TODO It would be better to create new elements than to replace the old ones
+    // TODO Look up how to generate the entire tag, rather than just replace
+    newMushrooms = m_hash[selection];
+    var pic = "img/" + newMushrooms[0] + ".jpg";
+    document.getElementById(selection).children[1].src = pic;
+    document.getElementById(selection).children[2].src = newMushrooms[0];
+    document.getElementById(selection).id = newMushrooms[0];
+    document.getElementById("instructions").innerHTML = "Does your mushroom look like these " + selection + "?";
 
-
-
+    if (newMushrooms.length > 1) {
+        for(var i=1; i < newMushrooms.length; i++) {
+            // Make a new label to hold the image and p text
+            var newLabel = document.createElement('label');
+            newLabel.setAttribute('class', 'unselected');
+            newLabel.setAttribute('id', newMushrooms[i]);
+            // Make a new image, set src
+            var newImg = document.createElement('img');
+            var pic = "img/" + newMushrooms[i] + ".jpg";
+            newImg.setAttribute('src', pic);
+            // Make a new paragraph, set text
+            var newPara = document.createElement('p');
+            var newText = document.createTextNode(newMushrooms[i]);
+            newPara.appendChild(newText);
+            // Make the image and paragraph children of the label
+            newLabel.appendChild(newImg);
+            newLabel.appendChild(newPara);
+            // Append the new label to the form
+            var element = document.getElementById('mushroom_selector');
+            element.appendChild(newLabel);
+        }
+    };
 }
