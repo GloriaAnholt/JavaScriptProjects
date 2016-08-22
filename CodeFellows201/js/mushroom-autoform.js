@@ -7,14 +7,12 @@
 // The grid of types serve as a js form: when the user clicks on
 // a type of mushroom, the main page serves back a sub-selection
 // page with a new set of relevant mushrooms to select from, also
-// as a form. This continues until one mushroom is left, which then
-// displays that mushroom.
+// as a form. This continues until one mushroom type is left, which then
+// displays that/those mushroom(s).
 
-// Broader categories
-var mushroom_types = ["caps", "morels", "trumpets", "puffballs", "corals", "shelves"];
-
-// Specific mushrooms per type
+// Mushrooms data structure
 var m_hash = {
+    alltypes: ["alltypes", "caps", "morels", "trumpets", "puffballs", "corals", "shelves"],
     caps: ["gills", "pores", "teeth"],
     gills: ["shaggymane"],
     pores: ["kingbolete"],
@@ -44,14 +42,8 @@ var capInstructions = "Does the underside of the cap have gills, pores (like foa
 
 // Form information
 var form = document.getElementById('mushroom_selector');
-//var options = form.elements.allShrooms;
 var selection = '';
-
-// Session Set-up
-// to save things: localStorage.setItem('itemName',JSON.stringify(itemName));
-// to retrieve things: var varName = localStorage.getItem('varName');
-var currentMushrooms = mushroom_types;
-localStorage.setItem('currentMushrooms',JSON.stringify(currentMushrooms));
+var currentMushrooms = [];
 
 // Create the mushroom webform
 function populateForm(mlist) {
@@ -93,7 +85,6 @@ function populateForm(mlist) {
     }
 }
 
-
 // Functions for mouse events
 function makeInteractive() {
     for(var i=0; i < currentMushrooms.length; i++) {
@@ -127,9 +118,18 @@ function mformSubmit() {
     setTimeout(setupMushrooms, 1000);
 }
 
+
 // When the window is ready, set up event listeners and form, then respond to clicks
 window.onload = function() {
-    currentMushrooms = JSON.parse(localStorage.getItem('currentMushrooms'));
+    // Session Set-up
+    // to save things: localStorage.setItem('itemName',JSON.stringify(itemName));
+    // to retrieve things: var varName = localStorage.getItem('varName');
+    if (sessionStorage.getItem('currentMushrooms') == [] || sessionStorage.getItem('currentMushrooms') === null) {
+        currentMushrooms = m_hash["alltypes"];
+        sessionStorage.setItem('currentMushrooms',JSON.stringify(currentMushrooms));
+    } else {
+        currentMushrooms = JSON.parse(sessionStorage.getItem('currentMushrooms'));
+    };
     populateForm(currentMushrooms);
     makeInteractive();
 }
@@ -137,7 +137,10 @@ window.onload = function() {
 // All the interactions functionality
 function fadeOut() {
     for(var i=0; i < currentMushrooms.length; i++) {
-        if (document.getElementById(currentMushrooms[i]).className != 'selected') {
+        if (document.getElementById(currentMushrooms[i]) === document.getElementById("alltypes")) {
+            continue;
+        }
+        else if (document.getElementById(currentMushrooms[i]).className != 'selected') {
            document.getElementById(currentMushrooms[i]).style.opacity = 0;
         } else {
             selection = currentMushrooms[i];
@@ -149,12 +152,14 @@ function setupMushrooms() {
     removeOld();
     insertNew();
     currentMushrooms = m_hash[selection];
-    localStorage.setItem('currentMushrooms',JSON.stringify(currentMushrooms));
+    sessionStorage.setItem('currentMushrooms',JSON.stringify(currentMushrooms));
 }
 
 function removeOld() {
     for(var i=0; i < currentMushrooms.length; i++) {
-        if (currentMushrooms[i] != selection) {
+        if (document.getElementById(currentMushrooms[i]) === document.getElementById("alltypes")) {
+            continue;
+        } else if (currentMushrooms[i] != selection) {
             document.getElementById(currentMushrooms[i]).className = 'remove';
         }
     };
