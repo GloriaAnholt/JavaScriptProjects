@@ -166,6 +166,7 @@ function removeOld() {
 }
 
 function insertNew() {
+    alert(selection);
     populateForm(m_hash[selection]);
 }
 
