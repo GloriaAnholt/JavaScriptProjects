@@ -1,89 +1,143 @@
 // Code Fellows 201: Final Website Project for 301 Application
 // https://gloriaanholt.github.io/JavaScriptProjects/CodeFellows201/index.html
 // @totallygloria
-// 2016.08.08
+// 2016.08.23
 
 
-// From the main page, there are six selectable mushroom-types.
-// The grid of types serve as a js form: when the user clicks on
-// a type of mushroom, the main page serves back a sub-selection
-// page with a new set of relevant mushrooms to select from, also
-// as a form. This continues until one mushroom is left, which then
-// displays that mushroom.
+// From the main page, there are six selectable mushroom-types. The grid of
+// types are hierarchical: when the user clicks on a type of mushroom, the
+// relevant children mushrooms appear, continuing until the leaf nodes are
+// displayed.
 
 
-// Create the event handler for mouse-over and clicking links
+// Mushrooms data structures
+var m_hash = {
+    alltypes: ["caps", "morels", "trumpets", "puffballs", "corals", "shelves"],
+    caps: ["gills", "pores", "teeth"],
+    gills: ["shaggymane"],
+    pores: ["kingbolete"],
+    teeth: ["hedgehog"],
+    morels: ["blackmorel"],
+    trumpets: ["bluechanterelle", "chanterelle"],
+    puffballs: ["commonpuffball"],
+    corals: ["cauliflower"],
+    shelves: ["chickenofthewoods", "oyster"]
+};
 
-var mushroom_types = ["caps", "morels", "trumpets", "puffballs", "corals", "shelves"];
-var mInstructions = "Select the outline of your mushroom to get started.";
-var cap_types = ["gills", "pores", "teeth"];
-var capInstructions = "Does the underside of the cap have gills, pores (like foam), or teeth?";
+var description_hash = {
+    caps: "Cap & Stem",
+    gills: "Underside of Cap is Gilled",
+    pores: "Underside of Cap has Pores",
+    teeth: "Underside of Cap has Fine Tooth-like Appendages",
+    morels: "Caps has Pits & Ridges",
+    trumpets: "Trumpet or Vase-Shaped",
+    puffballs: "Ball-like or Ball-on-Stem",
+    corals: "Coral or Cauliflower-Like",
+    shelves: "Shelf or Cup-Like"
+};
+
+// Instruction text
+// var mInstructions = "Select the outline of your mushroom to get started.";
+// var capInstructions = "Does the underside of the cap have gills, pores (like foam), or teeth?";
+
+// Global variables
+var selection = '';
+var currentMushrooms = [];
 
 
-function makeInteractive() {
-    var all = mushroom_types.length;
-    for(var i=0; i<all; i++) {
-        // Attach a listener to each li
-        document.getElementById(mushroom_types[i]).addEventListener("onmouseover", mushroomOver(mushroom_types[i]));
-        document.getElementById(mushroom_types[i]).addEventListener("onmouseout", mushroomOut(mushroom_types[i]));
-        document.getElementById(mushroom_types[i]).addEventListener("click", mushroomClick(mushroom_types[i]));
-    };
+// Create the initial website
+function populatePage() {
+
+    var mlist = currentMushrooms;
+
+    for(var i=0; i < mlist.length; i++) {
+        // Make a new list item to hold the image and p text
+        var newList = document.createElement('li');
+        newList.setAttribute('class', 'unselected');
+        newList.setAttribute('id', mlist[i]);
+
+        // Make a new image, set src
+        var newImg = document.createElement('img');
+        var pic = "img/" + mlist[i] + ".jpg";
+        newImg.setAttribute('src', pic);
+
+        // Make a new paragraph, set text
+        var newPara = document.createElement('p');
+        var desc = description_hash[mlist[i]];
+        var newText = document.createTextNode(desc);
+        newPara.appendChild(newText);
+
+        // Make the input, image, and paragraph children of the label
+        newList.appendChild(newImg);
+        newList.appendChild(newPara);
+
+        // Append the new label to the form, add interactivity
+        document.getElementById('mushroom_selector').appendChild(newList);
+        makeInteractive(newList.id);
     }
-
-function mushroomOver(mtype) {
-    document.getElementById(mtype).onmouseover = function(){this.className = 'active'};
 }
 
-function mushroomOut(mtype) {
-    document.getElementById(mtype).onmouseout = function(){this.className = 'unselected'};
+// Functions for mouse events
+function makeInteractive(mtype) {
+    document.getElementById(mtype).addEventListener("mouseover",
+        function() { this.className = 'active'; }
+    );
+    document.getElementById(mtype).addEventListener("mouseout",
+        function() { if (this.className != 'selected') { this.className = 'unselected'; } }
+    );
+    document.getElementById(mtype).addEventListener("click", mushroomClick);
 }
 
-function mushroomClick(mtype) {
+function mushroomClick() {
+    this.className = 'selected';
+    selection = this.id;
+    fadeOut();
+    setTimeout(removeOld, 900);
+    currentMushrooms = m_hash[selection];
+    sessionStorage.setItem('currentMushrooms',JSON.stringify(currentMushrooms));
+    setTimeout(populatePage, 1100);
+}
 
-    var selected = document.getElementById(mtype)
+function fadeOut() {
+    for(var i=0; i < currentMushrooms.length; i++) {
+        if (document.getElementById(currentMushrooms[i]).className != 'selected') {
+            document.getElementById(currentMushrooms[i]).style.opacity = 0;
+        }
+    }
+}
 
-    document.getElementById(mtype).onclick = function(){
-        for(var i=0; i<mushroom_types.length; i++) {
-            document.getElementById(mushroom_types[i]).style.opacity = 0;
-            }
+function removeOld() {
+    for(var i=0; i < currentMushrooms.length; i++) {
+        if (currentMushrooms[i] != selection) {
+            document.getElementById(currentMushrooms[i]).className = 'remove';
+        }
+    }
+}
 
-    if (mtype === 'caps') {
+function resetPage() {
+    var childDivs = document.getElementById('mushroom_selector').getElementsByTagName('li')
+    for (var i=1; i < childDivs.length; i++) {
+        childDivs[i].className = 'remove';
+    }
+    currentMushrooms = m_hash["alltypes"];
+    sessionStorage.setItem('currentMushrooms',JSON.stringify(currentMushrooms));
+    populatePage(currentMushrooms);
+}
 
-        function orderEvents() {
-            hideThings(fadeThings);
-        };
+window.onload = function() {
 
-        function hideThings(callback) {
-            setTimeout(function() {
-                mushroomHide();
-                if (typeof callback == 'function')
-                    callback();
-                }, 1000);
-        };
+    document.getElementById('alltypes').addEventListener("mouseover",
+        function() { this.className = 'active'; } );
+    document.getElementById('alltypes').addEventListener("mouseout",
+        function() { if (this.className = 'active') { this.className = 'unselected'; } } );
+    document.getElementById('alltypes').addEventListener("click", resetPage);
 
-        function fadeThings() {
-            document.getElementById('caps').className = 'hidden';
-            setTimeout('capsFadein();', 1000);
-            document.getElementById('instructions').innerHTML = capInstructions;
-        };
-
-        orderEvents();
-    } // close if statement
-    } // close onclick = function()
-    return false;
-
- } // close mushroomClick
-
-function mushroomHide() {
-    for(var i=0; i<mushroom_types.length; i++) {
-        document.getElementById(mushroom_types[i]).className = 'hidden';
-    };
+    if (sessionStorage.getItem('currentMushrooms') == [] || sessionStorage.getItem('currentMushrooms') === null) {
+        currentMushrooms = m_hash["alltypes"];
+        console.log(currentMushrooms);
+        sessionStorage.setItem('currentMushrooms',JSON.stringify(currentMushrooms));
+    } else {
+        currentMushrooms = JSON.parse(sessionStorage.getItem('currentMushrooms'));
+    }
+    populatePage(currentMushrooms);
 };
-
-function capsFadein() {
-    for(var i=0; i<cap_types.length; i++) {
-        document.getElementById(cap_types[i]).className = "unselected";
-    };
-};
-
-window.onload = makeInteractive();

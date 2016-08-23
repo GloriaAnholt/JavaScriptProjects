@@ -29,6 +29,10 @@ img {
     max-height: 500px;
 }
 
+ul {
+    list-style-type: none;
+}
+
 .remove {
     display: none;
 }
@@ -67,9 +71,7 @@ img {
 /* "Hero" header formatting */
 
 .hero {
-    background-image: url('../img/background_1440.jpg');
-    background-repeat: no-repeat;
-    background-position: center center;
+    background: url('../img/background_1440.jpg') no-repeat center center;
     height: 80vh;
     background-origin: content-box;
     -webkit-background-size: cover;
@@ -97,8 +99,8 @@ img {
 /*  Navigation Bar Specific Formatting  */
 
 ul.navbar {
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
     overflow: hidden;
     width: 100%;
     background-color: #C09F80;
@@ -108,7 +110,7 @@ ul.navbar {
 
 ul.navbar li {
     float: left;
-    font: Verdana;
+    font-family: Verdana, sans-serif;
 }
 
 ul.navbar li a {
@@ -133,7 +135,7 @@ ul.navbar li a.active {
 
 /* Radio button formatting */
 
-label.unselected {
+li.unselected {
     background-color: #fff;
 	float: left;
 	padding: 5px;
@@ -148,7 +150,7 @@ label.unselected {
     transition: opacity 800ms ease;
 }
 
-label.active {
+li.active {
     background-color: #fff;
 	float: left;
 	padding: 5px;
@@ -158,7 +160,7 @@ label.active {
 	margin: 10px 10px 20px 30px;
 }
 
-label.selected {
+li.selected {
     background-color: #fff;
 	float: left;
 	padding: 5px;
@@ -168,41 +170,16 @@ label.selected {
 	margin: 10px 10px 20px 30px;
 }
 
-label img   {
+li img   {
     float: right;
     margin-bottom: 20px;
 }
 
-label p   {
+li p   {
     margin: 0 -10px 0 -30px;
     width: 100%;
     text-align: center;
 }
-
-label > input {
-    -webkit-appearance:none;  /* Removes radio selector default appearance */
-    -moz-appearance:none;
-    appearance: none;
-    visibility: hidden; /* Makes input not-clickable */
-    position: absolute; /* Remove input from document flow */
-}
-
-label > input + img {
-  cursor: pointer;
-  border: 2px solid transparent;
-}
-/*
-label > input:checked {
-    background-color: #fff;
-	float: left;
-	padding: 5px;
-	border: 2px solid #eee;
-	border-radius: 8px;
-	box-shadow: rgba(0,0,0,0.4) 15px 15px;
-	margin: 10px 10px 20px 30px;
-}
-*/
-
 
 
 /*  Footer Specific Formatting  */
@@ -212,7 +189,7 @@ label > input:checked {
 	height: 50px;
 	background-color: #76323F;
 	color: #eee;
-	margin: 100 0 0 0 !important;
+	margin: 100px 0 0 0 !important;
     padding: 0 !important;
 }
 
