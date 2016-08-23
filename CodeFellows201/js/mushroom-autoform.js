@@ -12,7 +12,7 @@
 
 // Mushrooms data structure
 var m_hash = {
-    alltypes: ["alltypes", "caps", "morels", "trumpets", "puffballs", "corals", "shelves"],
+    alltypes: ["caps", "morels", "trumpets", "puffballs", "corals", "shelves"],
     caps: ["gills", "pores", "teeth"],
     gills: ["shaggymane"],
     pores: ["kingbolete"],
@@ -79,41 +79,26 @@ function populateForm(mlist) {
 
         // Append the new label to the form, add interactivity
         document.getElementById('mushroom_selector').appendChild(newLabel);
-        document.getElementById(newId).addEventListener("onmouseover", mushroomOver(newId));
-        document.getElementById(newId).addEventListener("onmouseout", mushroomOut(newId));
-        document.getElementById(newId).addEventListener("onclick", mushroomClick(newId));
+        makeInteractive(newLabel.id);
     }
 }
 
 // Functions for mouse events
-function makeInteractive() {
-    for(var i=0; i < currentMushrooms.length; i++) {
-        // Attach a listener to each label in the form
-        document.getElementById(currentMushrooms[i]).addEventListener("onmouseover", mushroomOver(currentMushrooms[i]));
-        document.getElementById(currentMushrooms[i]).addEventListener("onmouseout", mushroomOut(currentMushrooms[i]));
-        document.getElementById(currentMushrooms[i]).addEventListener("onclick", mushroomClick(currentMushrooms[i]));
-    };
-    form.addEventListener('click', function(event) { event.preventDefault(); mformSubmit(); } );
+function makeInteractive(mtype) {
+    document.getElementById(mtype).addEventListener("mouseover",
+        function() { this.className = 'active'; }
+        );
+    document.getElementById(mtype).addEventListener("mouseout",
+        function() { if (this.className != 'selected') { this.className = 'unselected'; } }
+        );
+    document.getElementById(mtype).addEventListener("click", mushroomClick);
 }
 
-function mushroomOver(mtype) {
-    if (document.getElementById(mtype).className === 'unselected') {
-        document.getElementById(mtype).onmouseover = function(){this.className = 'active'};
-    }
-}
 
-function mushroomOut(mtype) {
-    if (document.getElementById(mtype).className != 'selected') {
-        document.getElementById(mtype).onmouseout = function(){this.className = 'unselected'};
-    }
-}
-
-function mushroomClick(mtype) {
-        document.getElementById(mtype).onclick = function(){this.className = 'selected'};
-}
-
-// Functions for what to do when the form is submitted
-function mformSubmit() {
+function mushroomClick() {
+    this.className = 'selected';
+    selection = this.id;
+    console.log("clicked things are ", arguments)
     fadeOut();
     setTimeout(setupMushrooms, 1000);
 }
@@ -124,6 +109,8 @@ window.onload = function() {
     // Session Set-up
     // to save things: localStorage.setItem('itemName',JSON.stringify(itemName));
     // to retrieve things: var varName = localStorage.getItem('varName');
+    makeInteractive('alltypes');
+
     if (sessionStorage.getItem('currentMushrooms') == [] || sessionStorage.getItem('currentMushrooms') === null) {
         currentMushrooms = m_hash["alltypes"];
         sessionStorage.setItem('currentMushrooms',JSON.stringify(currentMushrooms));
@@ -131,43 +118,40 @@ window.onload = function() {
         currentMushrooms = JSON.parse(sessionStorage.getItem('currentMushrooms'));
     };
     populateForm(currentMushrooms);
-    makeInteractive();
 }
 
 // All the interactions functionality
+function resetForm() {
+    var formData = document.getElementById('mushroom_selector');
+    while ( formData.lastChild ) {
+        formData.removeChild( formData.lastChild );
+    };
+    currentMushrooms = m_hash['alltypes'];
+    sessionStorage.setItem('currentMushrooms',JSON.stringify(currentMushrooms));
+    populateForm(currentMushrooms);
+}
+
 function fadeOut() {
     for(var i=0; i < currentMushrooms.length; i++) {
-        if (document.getElementById(currentMushrooms[i]) === document.getElementById("alltypes")) {
-            continue;
-        }
-        else if (document.getElementById(currentMushrooms[i]).className != 'selected') {
+        if (document.getElementById(currentMushrooms[i]).className != 'selected') {
            document.getElementById(currentMushrooms[i]).style.opacity = 0;
-        } else {
-            selection = currentMushrooms[i];
-        };
+        }
     };
 }
 
 function setupMushrooms() {
     removeOld();
-    insertNew();
+    populateForm(m_hash[selection]);
     currentMushrooms = m_hash[selection];
     sessionStorage.setItem('currentMushrooms',JSON.stringify(currentMushrooms));
 }
 
 function removeOld() {
     for(var i=0; i < currentMushrooms.length; i++) {
-        if (document.getElementById(currentMushrooms[i]) === document.getElementById("alltypes")) {
-            continue;
-        } else if (currentMushrooms[i] != selection) {
+        if (currentMushrooms[i] != selection) {
             document.getElementById(currentMushrooms[i]).className = 'remove';
         }
     };
-}
-
-function insertNew() {
-    alert(selection);
-    populateForm(m_hash[selection]);
 }
 
 
