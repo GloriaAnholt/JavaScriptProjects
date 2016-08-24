@@ -11,12 +11,12 @@
 // displays that/those mushroom(s).
 
 
-// data sctructure
+// data structures
 var m_hash = {
     alltypes: ["caps", "morels", "trumpets", "puffballs", "corals", "shelves"],
     caps: ["gills", "pores", "teeth"],
     gills: ["shaggymane"],
-    pores: ["kingbolete" ],
+    pores: ["kingbolete"],
     teeth: ["hedgehog"],
     morels: ["blackmorel"],
     trumpets: ["chanterelle", "bluechanterelle", "blackchanterelle"],
@@ -24,6 +24,10 @@ var m_hash = {
     corals: ["cauliflower"],
     shelves: ["chickenofthewoods", "oyster"]
 };
+
+var leafNodes = ["shaggymane", "kingbolete", "hedgehog", "blackmorel",
+    "chanterelle", "bluechanterelle", "blackchanterelle", "commonpuffball",
+    "cauliflower", "chickenofthewoods", "oyster"];
 
 // Instruction text
 // var mInstructions = "Select the outline of your mushroom to get started.";
@@ -79,24 +83,35 @@ function resetPage() {
 function mushroomClick() {
     this.className = 'selected';
     selection = this.id;
-
     // Reset the session data
-    if (selection == "gills" || selection == "pores" || selection == "teeth") {
-        currentMushrooms = ["alltypes", "caps", selection];
-    } else {
-        currentMushrooms = ["alltypes", selection];
-    }
-    for (var i=0; i < m_hash[selection].length; i++) {
-        currentMushrooms.push(m_hash[selection][i]);
-    }
-    sessionStorage.setItem('currentMushrooms',JSON.stringify(currentMushrooms));
+    currentMushrooms = ["alltypes", selection];
 
-    // Change the displayed mushrooms to match selection
-    fadeOut();
-    setTimeout(removeOld, 800);
-    setTimeout(showChildren, 810);
+    if (isLeaf(selection)) {
+        secondPic = "img/" + selection + "_2.jpg";
+        window.location = 'results.html'
+        document.getElementById("explanation").children[0].src = secondPic;
+        document.getElementById(selection).children[2].innerHTML = "More on black morels";
+    } else {
+        for (var i = 0; i < m_hash[selection].length; i++) {
+            currentMushrooms.push(m_hash[selection][i]);
+        }
+        sessionStorage.setItem('currentMushrooms', JSON.stringify(currentMushrooms));
+
+        // Change the displayed mushrooms to match selection
+        fadeOut();
+        setTimeout(removeOld, 800);
+        setTimeout(showChildren, 810);
+    }
 }
 
+function isLeaf(item) {
+    for (var i=0; i < leafNodes.length; i++) {
+        if (leafNodes[i] === item) {
+            return true;
+        }
+    }
+    return false;
+}
 
 /* When the window is ready, set up event listeners, then respond to clicks */
 window.onload = function() {
