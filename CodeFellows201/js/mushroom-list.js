@@ -13,7 +13,7 @@
 
 // data structures
 var m_hash = {
-    alltypes: ["caps", "morels", "trumpets", "puffballs", "corals", "shelves"],
+    alltypes: ["alltypes", "caps", "morels", "trumpets", "puffballs", "corals", "shelves"],
     caps: ["gills", "pores", "teeth"],
     gills: ["shaggymane"],
     pores: ["kingbolete"],
@@ -137,7 +137,8 @@ var currentMushrooms = [];
 function makeInteractive() {
     var totalList = document.getElementById('mushroom_selector');
     var elemList = totalList.getElementsByTagName('li');
-    for (var i = 0; i < elemList.length; i++) {
+    var allelem = elemList.length;
+    for (var i = 0; i < allelem; i++) {
         if ((m_hash[elemList[i].id] != undefined) || (leafText[elemList[i].id] != undefined))  {
             elemList[i].addEventListener("mouseover", mushroomOver);
             elemList[i].addEventListener("mouseout", mushroomOut);
@@ -153,28 +154,34 @@ function makeInteractive() {
 function mushroomOver() {
     if (this.className == 'unselected') {
         this.className = 'active'
+        console.log(this.id, this.className);
     }
 }
 
 function mushroomOut() {
     if (this.className == 'active') {
         this.className = 'unselected'
+        console.log(this.id, this.className);
     }
 }
 
 function resetPage() {
+    currentMushrooms = [];
     var totalList = document.getElementById('mushroom_selector');
     var elemList = totalList.getElementsByTagName('li');
     var startingSet = m_hash["alltypes"];
-    for (var i=1; i < elemList.length; i++) {
-        elemList[i].className = 'remove';
+    var allelem = elemList.length;
+    for (var i=0, j=0; i < allelem; i++) {
+        if (elemList[i].id == startingSet[j]) {
+            elemList[i].className = 'unselected';
+            elemList[i].style.opacity = 100;
+            currentMushrooms[j] = elemList[i];
+            j++;
+        } else {
+            elemList[i].className = 'remove';
         }
-    currentMushrooms = ["alltypes"];
-    for (var i=0; i < startingSet.length; i++) {
-        document.getElementById(startingSet[i]).className = 'unselected';
-        document.getElementById(startingSet[i]).style.opacity = 100;
-        currentMushrooms.push(startingSet[i]);
-        }
+    }
+    console.log('current mushrooms are ', currentMushrooms);
     sessionStorage.setItem('currentMushrooms',JSON.stringify(currentMushrooms));
 }
 
@@ -182,75 +189,16 @@ function resetPage() {
 function mushroomClick() {
     this.className = 'selected';
     selection = this.id;
-    // Reset the session data
-    currentMushrooms = ["alltypes", selection];
-
+    fadeOut();
+    setTimeout(removeOld, 800);
     // check m_hash, if selection doesn't exist, then it must be a leaf node
     if (isLeaf(selection)) {
-        fadeOut();
-        setTimeout(removeOld, 800);
         setTimeout(showLeaf, 810);
     } else {
-        for (var i = 0; i < m_hash[selection].length; i++) {
-            currentMushrooms.push(m_hash[selection][i]);
-        }
-        sessionStorage.setItem('currentMushrooms', JSON.stringify(currentMushrooms));
-
-        // Change the displayed mushrooms to match selection
-        fadeOut();
-        setTimeout(removeOld, 800);
         setTimeout(showChildren, 810);
     }
+    updateSession();
 }
-
-function isLeaf(node) {
-    if (m_hash[node] == undefined) return true;
-    return false;
-}
-
-function showLeaf() {
-    secondPic = "img/" + selection + "_2.jpg";
-    document.getElementById("additionalImg").firstElementChild.src = secondPic;
-    document.getElementById("additionalImg").className = 'unselected';
-    document.getElementById("additionalImg").style.opacity = 100;
-    document.getElementById("explanation").firstElementChild.innerHTML = leafText[selection];
-    document.getElementById("explanation").className = 'unselected';
-    document.getElementById("explanation").style.opacity = 100;
-}
-
-/* When the window is ready, set up event listeners, then respond to clicks */
-window.onload = function() {
-
-    makeInteractive();
-
-    // This needs to change what is displayed on load, right now it doesn't do anything
-    if (sessionStorage.getItem('currentMushrooms') == [] || sessionStorage.getItem('currentMushrooms') === null) {
-        // If there's nothing in current, put the master list in it
-        currentMushrooms.push("alltypes");
-        var startingSet = m_hash["alltypes"];
-        for (var i=0; i < startingSet.length; i++) {
-            currentMushrooms.push(startingSet[i]);
-            document.getElementById(startingSet[i]).className = 'unselected';
-            document.getElementById(startingSet[i]).style.opacity = 100;
-        }
-        sessionStorage.setItem('currentMushrooms',JSON.stringify(currentMushrooms));
-    } else {
-        currentMushrooms = JSON.parse(sessionStorage.getItem('currentMushrooms'));
-        var totalList = document.getElementById('mushroom_selector');
-        var elemList = totalList.getElementsByTagName('li');
-        for (var i=0, j=0; i < elemList.length; i++) {
-            if (elemList[i].id == currentMushrooms[j]) {
-                elemList[i].className = 'unselected';
-                elemList[i].style.opacity = 100;
-                j++;
-            } else {
-                elemList[i].className = 'remove';
-            }
-        }
-    }
-};
-
-
 
 function fadeOut() {
 // Takes all of the selected item's siblings and fades them to zero
@@ -274,11 +222,93 @@ function removeOld() {
     }
 }
 
+function isLeaf(node) {
+    if (m_hash[node] == undefined) return true;
+    return false;
+}
+
+function showLeaf() {
+    secondPic = "img/" + selection + "_2.jpg";
+    document.getElementById("additionalImg").firstElementChild.src = secondPic;
+    document.getElementById("additionalImg").className = 'unselected';
+    document.getElementById("additionalImg").style.opacity = 100;
+    document.getElementById("explanation").firstElementChild.innerHTML = leafText[selection];
+    document.getElementById("explanation").className = 'unselected';
+    document.getElementById("explanation").style.opacity = 100;
+}
+
 function showChildren() {
 // Takes all of the selected item's children and sets them to be visible
     var children = m_hash[selection];
-    for (var i=0; i < children.length; i++) {
+    var allelem = children.length;
+    for (var i=0; i < allelem; i++) {
         document.getElementById(children[i]).className = 'unselected';
         document.getElementById(children[i]).style.opacity = 100;
     }
 }
+
+function updateSession() {
+
+    switch (selection) {
+        case "caps":
+            var subset = ["alltypes", "caps", "gills", "pores", "teeth"];
+            break;
+        case "gills":
+            subset = ["alltypes", "caps", "gills", "shaggymane"];
+            break;
+        case "pores":
+            subset = ["alltypes", "caps", "pores", "kingbolete"];
+            break;
+        case "teeth":
+            subset = ["alltypes", "caps", "teeth", "hedgehog"];
+            break;
+        case "morels":
+            subset = ["alltypes", "morels", "blackmorel"];
+            break;
+        case "trumpets":
+            subset = ["alltypes", "trumpets", "chanterelle", "bluechanterelle", "blackchanterelle"];
+            break;
+        case "puffballs":
+            subset = ["alltypes", "puffballs", "commonpuffball"];
+            break;
+        case "corals":
+            subset = ["alltypes", "corals", "cauliflower"];
+            break;
+        case "shelves":
+            subset = ["alltypes", "shelves", "chickenofthewoods", "oyster"];
+            break;
+    }
+    var allelem = subset.length;
+    for (i=0; i < allelem; i++) {
+        currentMushrooms.push(document.getElementById(subset[i]));
+    }
+    sessionStorage.setItem('currentMushrooms', JSON.stringify(currentMushrooms));
+}
+
+
+
+/* When the window is ready, set up event listeners, then respond to clicks */
+window.onload = function() {
+
+    makeInteractive();
+    currentMushrooms = sessionStorage.getItem('currentMushrooms');
+    console.log('on load, current are ', currentMushrooms);
+    if ((currentMushrooms == []) || (currentMushrooms === null) ||
+        (currentMushrooms == [{},{},{},{},{},{},{}])) {
+        resetPage();
+    } else {
+        var totalList = document.getElementById('mushroom_selector');
+        var elemList = totalList.getElementsByTagName('li');
+        var allelem = elemList.length;
+        for (var i = 0, j = 0; i < allelem; i++) {
+            if (elemList[i].id == currentMushrooms[j].id) {
+                elemList[i].style.opacity = 100;
+                elemList[i].className = currentMushrooms[j].className;
+                j++;
+            } else {
+                elemList[i].className = 'remove';
+            }
+        }
+    }
+}
+
