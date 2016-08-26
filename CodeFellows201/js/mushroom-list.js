@@ -130,7 +130,7 @@ var leafText = {
 
 // Global variables
 var selection = '';
-var currentMushrooms = [];
+var currentMushrooms = {};
 
 
 // Functions for mouse events
@@ -154,19 +154,17 @@ function makeInteractive() {
 function mushroomOver() {
     if (this.className == 'unselected') {
         this.className = 'active'
-        console.log(this.id, this.className);
     }
 }
 
 function mushroomOut() {
     if (this.className == 'active') {
         this.className = 'unselected'
-        console.log(this.id, this.className);
     }
 }
 
 function resetPage() {
-    currentMushrooms = [];
+    currentMushrooms = {};
     var totalList = document.getElementById('mushroom_selector');
     var elemList = totalList.getElementsByTagName('li');
     var startingSet = m_hash["alltypes"];
@@ -175,14 +173,13 @@ function resetPage() {
         if (elemList[i].id == startingSet[j]) {
             elemList[i].className = 'unselected';
             elemList[i].style.opacity = 100;
-            currentMushrooms[j] = elemList[i];
+            currentMushrooms[elemList[i].id] = elemList[i].className;
             j++;
         } else {
             elemList[i].className = 'remove';
         }
     }
-    console.log('current mushrooms are ', currentMushrooms);
-    sessionStorage.setItem('currentMushrooms',JSON.stringify(currentMushrooms));
+    sessionStorage.setItem('currentMushrooms', JSON.stringify(currentMushrooms));
 }
 
 
@@ -278,9 +275,10 @@ function updateSession() {
             subset = ["alltypes", "shelves", "chickenofthewoods", "oyster"];
             break;
     }
+    currentMushrooms = {};
     var allelem = subset.length;
     for (i=0; i < allelem; i++) {
-        currentMushrooms.push(document.getElementById(subset[i]));
+        currentMushrooms[subset[i]] = document.getElementById(subset[i]).className;
     }
     sessionStorage.setItem('currentMushrooms', JSON.stringify(currentMushrooms));
 }
@@ -291,20 +289,19 @@ function updateSession() {
 window.onload = function() {
 
     makeInteractive();
-    currentMushrooms = sessionStorage.getItem('currentMushrooms');
-    console.log('on load, current are ', currentMushrooms);
-    if ((currentMushrooms == []) || (currentMushrooms === null) ||
-        (currentMushrooms == [{},{},{},{},{},{},{}])) {
+
+    if ((sessionStorage.getItem('currentMushrooms') == {}) || (sessionStorage.getItem('currentMushrooms') === null)) {
         resetPage();
     } else {
+        currentMushrooms = JSON.parse(sessionStorage.getItem('currentMushrooms'));
+        console.log('on load, current is ', currentMushrooms);
         var totalList = document.getElementById('mushroom_selector');
         var elemList = totalList.getElementsByTagName('li');
         var allelem = elemList.length;
-        for (var i = 0, j = 0; i < allelem; i++) {
-            if (elemList[i].id == currentMushrooms[j].id) {
+        for (var i = 0; i < allelem; i++) {
+            if (elemList[i].id in currentMushrooms) {
                 elemList[i].style.opacity = 100;
-                elemList[i].className = currentMushrooms[j].className;
-                j++;
+                elemList[i].className = currentMushrooms[elemList[i].id];
             } else {
                 elemList[i].className = 'remove';
             }
