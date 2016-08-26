@@ -3,12 +3,12 @@
 // @totallygloria
 // 2016.08.11
 
-// From the main page, there are six selectable mushroom-types.
-// The grid of types serve as a js form: when the user clicks on
-// a type of mushroom, the main page serves back a sub-selection
-// page with a new set of relevant mushrooms to select from, also
-// as a form. This continues until one mushroom type is left, which then
-// displays that/those mushroom(s).
+// From the main page, there are six selectable mushroom-types, and a View All.
+// The grid of types uses eventListeners to function like a js form:
+// when the user clicks on a type of mushroom, the main page first hides and
+// removes non-related mushrooms, and then displays a new set of relevant 'child'
+// mushrooms. This continues until one mushroom type is left, which, when selected,
+// displays some basic information about that variety of mushroom.
 
 
 // data structures
@@ -164,6 +164,7 @@ function mushroomOut() {
 }
 
 function resetPage() {
+    // Clear the deck of everything except All Types, redisplay starting set
     currentMushrooms = {};
     var totalList = document.getElementById('mushroom_selector');
     var elemList = totalList.getElementsByTagName('li');
@@ -181,7 +182,6 @@ function resetPage() {
     }
     sessionStorage.setItem('currentMushrooms', JSON.stringify(currentMushrooms));
 }
-
 
 function mushroomClick() {
     this.className = 'selected';
@@ -220,22 +220,25 @@ function removeOld() {
 }
 
 function isLeaf(node) {
-    if (m_hash[node] == undefined) return true;
-    return false;
+// If a node isn't in the main hash, it's a leaf & returns true, else returns false.
+    return m_hash[node] == undefined;
 }
 
 function showLeaf() {
-    secondPic = "img/" + selection + "_2.jpg";
+// Edits the final two li styles and displays them. Could also be in CSS.
+    var secondPic = "img/" + selection + "_2.jpg";
     document.getElementById("additionalImg").firstElementChild.src = secondPic;
     document.getElementById("additionalImg").firstElementChild.style.width = '100%';
     document.getElementById("additionalImg").className = 'unselected';
-    document.getElementById('additionalImg').style.width = '40%';
-    document.getElementById('additionalImg').style.cssFloat = 'left';
+    document.getElementById("additionalImg").style.width = '40%';
+    document.getElementById("additionalImg").style.cssFloat = 'left';
     document.getElementById("additionalImg").style.opacity = 100;
-    document.getElementById("explanation").firstElementChild.innerHTML = leafText[selection];
+    document.getElementById("explanation").firstElementChild.innerHTML = (selection + " mushroom");
+    document.getElementById("explanation").children[1].innerHTML = leafText[selection];
+    document.getElementById("explanation").children[1].style.textAlign = 'left';
     document.getElementById("explanation").className = 'unselected';
-    document.getElementById('explanation').style.width = '40%';
-    document.getElementById('additionalImg').style.cssFloat = 'left';
+    document.getElementById("explanation").style.width = '40%';
+    document.getElementById("explanation").style.cssFloat = 'left';
     document.getElementById("explanation").style.opacity = 100;
 }
 
@@ -250,7 +253,8 @@ function showChildren() {
 }
 
 function updateSession() {
-
+// Programmatically finding a mushroom's path without using a tree data structure
+// was difficult, a basic switch statement provides path data instead.
     switch (selection) {
         case "caps":
             var subset = ["alltypes", "caps", "gills", "pores", "teeth"];
@@ -282,7 +286,7 @@ function updateSession() {
     }
     currentMushrooms = {};
     var allelem = subset.length;
-    for (i=0; i < allelem; i++) {
+    for (var i=0; i < allelem; i++) {
         currentMushrooms[subset[i]] = document.getElementById(subset[i]).className;
     }
     sessionStorage.setItem('currentMushrooms', JSON.stringify(currentMushrooms));
@@ -290,16 +294,16 @@ function updateSession() {
 
 
 
-/* When the window is ready, set up event listeners, then respond to clicks */
-window.onload = function() {
 
+window.onload = function() {
+// When the window is ready, set up event listeners, if no session data if available
+// load the starting set of mushrooms, else load the session data.
     makeInteractive();
 
     if ((sessionStorage.getItem('currentMushrooms') == {}) || (sessionStorage.getItem('currentMushrooms') === null)) {
         resetPage();
     } else {
         currentMushrooms = JSON.parse(sessionStorage.getItem('currentMushrooms'));
-        console.log('on load, current is ', currentMushrooms);
         var totalList = document.getElementById('mushroom_selector');
         var elemList = totalList.getElementsByTagName('li');
         var allelem = elemList.length;
@@ -312,5 +316,5 @@ window.onload = function() {
             }
         }
     }
-}
+};
 
