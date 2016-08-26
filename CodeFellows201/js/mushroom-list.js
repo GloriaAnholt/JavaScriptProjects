@@ -227,10 +227,15 @@ function isLeaf(node) {
 function showLeaf() {
     secondPic = "img/" + selection + "_2.jpg";
     document.getElementById("additionalImg").firstElementChild.src = secondPic;
+    document.getElementById("additionalImg").firstElementChild.style.width = '100%';
     document.getElementById("additionalImg").className = 'unselected';
+    document.getElementById('additionalImg').style.width = '40%';
+    document.getElementById('additionalImg').style.cssFloat = 'left';
     document.getElementById("additionalImg").style.opacity = 100;
     document.getElementById("explanation").firstElementChild.innerHTML = leafText[selection];
     document.getElementById("explanation").className = 'unselected';
+    document.getElementById('explanation').style.width = '40%';
+    document.getElementById('additionalImg').style.cssFloat = 'left';
     document.getElementById("explanation").style.opacity = 100;
 }
 
