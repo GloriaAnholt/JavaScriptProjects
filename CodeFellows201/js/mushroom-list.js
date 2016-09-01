@@ -225,21 +225,50 @@ function isLeaf(node) {
 }
 
 function showLeaf() {
-// Edits the final two li styles and displays them. Could also be in CSS.
+// Creates the img and explanation text for the selected mushroom
+// and appends the new elements to end of ul
+    // Make a new list item to hold the second image
+    var newPic = document.createElement('li');
+    newPic.setAttribute('class', 'unselected');
+    newPic.setAttribute('id', 'additionalImg');
+    newPic.setAttribute('style', 'width: 40%');
+    newPic.setAttribute('cssFloat', 'left');
+
+    // Make a new image, set src
+    var newImg = document.createElement('img');
+    newImg.setAttribute('style', 'width: 100%');
     var secondPic = "img/" + selection + "_2.jpg";
-    document.getElementById("additionalImg").firstElementChild.src = secondPic;
-    document.getElementById("additionalImg").firstElementChild.style.width = '100%';
-    document.getElementById("additionalImg").className = 'unselected';
-    document.getElementById("additionalImg").style.width = '40%';
-    document.getElementById("additionalImg").style.cssFloat = 'left';
-    document.getElementById("additionalImg").style.opacity = 100;
-    document.getElementById("explanation").firstElementChild.innerHTML = (selection + " mushroom");
-    document.getElementById("explanation").children[1].innerHTML = leafText[selection];
-    document.getElementById("explanation").children[1].style.textAlign = 'left';
-    document.getElementById("explanation").className = 'unselected';
-    document.getElementById("explanation").style.width = '40%';
-    document.getElementById("explanation").style.cssFloat = 'left';
-    document.getElementById("explanation").style.opacity = 100;
+    newImg.setAttribute('src', secondPic);
+
+    // Set the image as a child of the li
+    newPic.appendChild(newImg);
+
+    // Make a new list item to hold the explanation text
+    var newText = document.createElement('li');
+    newText.setAttribute('class', 'unselected');
+    newText.setAttribute('id', 'explanation');
+    newText.setAttribute('style', 'width: 40%');
+
+    // Make a new heading, set heading to selection's heading, append the title text to the tag
+    var newTitle = document.createElement('h3');
+    newTitle.setAttribute('style', 'text-align: center');
+    var titleText = document.getElementById(selection).firstElementChild.nextElementSibling.textContent;
+    var titleNode = document.createTextNode(titleText);
+    newTitle.appendChild(titleNode);
+
+    // Make a new paragraph tag, fix text alignment, add text
+    var newPara = document.createElement('p');
+    newPara.setAttribute('style', 'text-align: left');
+    var newDesc = document.createTextNode(leafText[selection]);
+    newPara.appendChild(newDesc);
+
+    // Append the title, then the paragraph, to the parent li
+    newText.appendChild(newTitle);
+    newText.appendChild(newPara);
+
+    // Append the new elements to the ul
+    document.getElementById('mushroom_selector').appendChild(newPic);
+    document.getElementById('mushroom_selector').appendChild(newText);
 }
 
 function showChildren() {
@@ -255,9 +284,10 @@ function showChildren() {
 function updateSession() {
 // Programmatically finding a mushroom's path without using a tree data structure
 // was difficult, a basic switch statement provides path data instead.
+    var subset = [];
     switch (selection) {
         case "caps":
-            var subset = ["alltypes", "caps", "gills", "pores", "teeth"];
+            subset = ["alltypes", "caps", "gills", "pores", "teeth"];
             break;
         case "gills":
             subset = ["alltypes", "caps", "gills", "shaggymane"];
@@ -286,7 +316,7 @@ function updateSession() {
     }
     currentMushrooms = {};
     var allelem = subset.length;
-    for (var i=0; i < allelem; i++) {
+    for (var i = 0; i < allelem; i++) {
         currentMushrooms[subset[i]] = document.getElementById(subset[i]).className;
     }
     sessionStorage.setItem('currentMushrooms', JSON.stringify(currentMushrooms));
